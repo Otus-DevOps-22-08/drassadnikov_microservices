@@ -361,7 +361,6 @@ one_to_one_nat:
 
 [redos@redos ~]$ ssh yc-user@51.250.70.85
 
-
 yc-user@fhm3eh2q3kdvid2nvp3t:~$ docker-machine create --driver generic --generic-ip-address=51.250.70.85 --generic-ssh-user yc-user --generic-ssh-key ~/.ssh/yc docker-host
 
 eval $(docker-machine env docker-host)
