@@ -1,0 +1,367 @@
+[root@redos redos]# docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED          SIZE
+yourname/ubuntu-tmp-file   latest    be6d19673ead   22 seconds ago   63.1MB
+nginx                      latest    3f8a00f137a0   2 weeks ago      142MB
+ubuntu                     18.04     5d2df19066ac   4 weeks ago      63.1MB
+hello-world                latest    feb5d9fea6a5   17 months ago    13.3kB
+---------------------------
+[root@redos redos]# docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+c4bec051c426   nginx:latest   "/docker-entrypoint.…"   10 minutes ago   Up 10 minutes   80/tcp    strange_banach
+5aeebddc380a   ubuntu:18.04   "/bin/bash"              23 minutes ago   Up 12 minutes             vigorous_ardinghelli
+
+
+docker inspect 5aeebddc380a
+[root@redos redos]# docker inspect 5aeebddc380a
+[
+    {
+        "Id": "5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db",
+        "Created": "2023-02-27T19:00:35.475471603Z",
+        "Path": "/bin/bash",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 5270,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2023-02-27T19:11:51.476169999Z",
+            "FinishedAt": "2023-02-27T19:08:27.473385724Z"
+        },
+        "Image": "sha256:5d2df19066aca89df8e5317544a1cb599dc657830184762ff6fdefaaf708db65",
+        "ResolvConfPath": "/var/lib/docker/containers/5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db/hostname",
+        "HostsPath": "/var/lib/docker/containers/5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db/hosts",
+        "LogPath": "/var/lib/docker/containers/5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db/5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db-json.log",
+        "Name": "/vigorous_ardinghelli",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "default",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "KernelMemory": 0,
+            "KernelMemoryTCP": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/783d6ea8bfdaa65b77c29c33ded5e84cba0c304c79e70f0fba6dfa4001bba70f-init/diff:/var/lib/docker/overlay2/a33fde35942647bc7e1a9398eeccbfa4653461c9045a5093be65775f4a5bb6d1/diff",
+                "MergedDir": "/var/lib/docker/overlay2/783d6ea8bfdaa65b77c29c33ded5e84cba0c304c79e70f0fba6dfa4001bba70f/merged",
+                "UpperDir": "/var/lib/docker/overlay2/783d6ea8bfdaa65b77c29c33ded5e84cba0c304c79e70f0fba6dfa4001bba70f/diff",
+                "WorkDir": "/var/lib/docker/overlay2/783d6ea8bfdaa65b77c29c33ded5e84cba0c304c79e70f0fba6dfa4001bba70f/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "5aeebddc380a",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": true,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": true,
+            "OpenStdin": true,
+            "StdinOnce": true,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "Image": "ubuntu:18.04",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "18.04"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "685cfe032b48681c9a9ad70fbfae768b83ffbf6b4a7b15eb1053e2a9f193968a",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {},
+            "SandboxKey": "/var/run/docker/netns/685cfe032b48",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "95b9879cba6e6eaa39a689a8c24c148a81eb1e9cb09e3a4f0fa6df5b4abb878d",
+            "Gateway": "172.17.0.1",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "172.17.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "MacAddress": "02:42:ac:11:00:02",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "87be66351c0e2e5db8e878be5c8cbd76e552ab5fd1608d6d1eeb640a4f099889",
+                    "EndpointID": "95b9879cba6e6eaa39a689a8c24c148a81eb1e9cb09e3a4f0fa6df5b4abb878d",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+        }
+    }
+]
+
+
+
+
+
+docker inspect be6d19673ead
+[root@redos redos]# docker inspect be6d19673ead
+[
+    {
+        "Id": "sha256:be6d19673eadd30098f2aa6a3234848e75c3942388ec6ee58fd7a4d63ccfb8d5",
+        "RepoTags": [
+            "yourname/ubuntu-tmp-file:latest"
+        ],
+        "RepoDigests": [],
+        "Parent": "sha256:5d2df19066aca89df8e5317544a1cb599dc657830184762ff6fdefaaf708db65",
+        "Comment": "",
+        "Created": "2023-02-27T19:17:34.894277622Z",
+        "Container": "5aeebddc380ae2079b55e3c92e6eb95ee47068834284b7225048a8ccc16de9db",
+        "ContainerConfig": {
+            "Hostname": "5aeebddc380a",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": true,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": true,
+            "OpenStdin": true,
+            "StdinOnce": true,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "Image": "ubuntu:18.04",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "18.04"
+            }
+        },
+        "DockerVersion": "20.10.10",
+        "Author": "",
+        "Config": {
+            "Hostname": "5aeebddc380a",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": true,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": true,
+            "OpenStdin": true,
+            "StdinOnce": true,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "Image": "ubuntu:18.04",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "18.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 63146808,
+        "VirtualSize": 63146808,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/a33fde35942647bc7e1a9398eeccbfa4653461c9045a5093be65775f4a5bb6d1/diff",
+                "MergedDir": "/var/lib/docker/overlay2/dd4615157696724fd2b6964565326d8cc8e38d4829baa7fe59fa65a71541ae3f/merged",
+                "UpperDir": "/var/lib/docker/overlay2/dd4615157696724fd2b6964565326d8cc8e38d4829baa7fe59fa65a71541ae3f/diff",
+                "WorkDir": "/var/lib/docker/overlay2/dd4615157696724fd2b6964565326d8cc8e38d4829baa7fe59fa65a71541ae3f/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:475a54c2a93de61ab1a000184b41b5c5370eef3842486f6c185cd9a001ff1a92",
+                "sha256:8b2f148fa65e5dd22866102a0b4ce46bd2e97f7417577f96380616c9885bc9b5"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2023-02-27T22:17:34.905281093+03:00"
+        }
+    }
+]
+
+
+Образ Docker (Docker Image) - это неизменяемый файл, содержащий исходный код, библиотеки, зависимости, инструменты и другие файлы, необходимые для запуска приложения.
+Образ - это шаблон, на основе которого создается контейнер, существует отдельно и не может быть изменен. 
+При запуске контейнерной среды внутри контейнера создается копия файловой системы (docker образа) для чтения и записи. 
+Можно создать неограниченное количество образов Docker из одного шаблона.Каждый раз при изменении начального состояния образа и сохранении существующего состояния создается новый шаблон с дополнительным слоем поверх него.
+Таким образом, образы Docker могут состоять из ряда слоев, каждый из которых отличается от предыдущего. Слои образа представляют файлы, доступные только для чтения, поверх которых при создании контейнера добавляется новый слой.
+
+Контейнер Docker (Docker Container) - это виртуализированная среда выполнения, в которой пользователи могут изолировать приложения от хостовой системы. 
+Эти контейнеры представляют собой компактные портативные хосты, в которых можно быстро и легко запустить приложение.
+
+Разница:
+Говоря о разнице между образами и контейнерами, было бы неверно противопоставлять их друг-другу. Оба элемента тесно связаны между собой и являются основными шестерёнками Docker.
+Из определения терминов образ и контейнер выше, легко установить связь между ними: образы могут существовать без контейнеров, тогда как для существования контейнеров необходимо запустить образ. Поэтому контейнеры зависят от изображений и используют их для создания среды выполнения и запуска приложения.
+Эти две концепции существуют как важные компоненты (или, скорее, фазы) в процессе запуска контейнера Docker. Наличие рабочего контейнера является конечной «фазой» этого процесса, указывая, что он зависит от предыдущих этапов и компонентов. Именно поэтому образ docker по существу управляют контейнерами и формируют их.
+
+-- YC
+
+[root@redos yandex-cloud]# yc init
+Welcome! This command will take you through the configuration process.
+Please go to https://oauth.yandex.ru/authorize?response_type=token&client_id=1a6990aa636648e9b2ef855fa7bec2fb in order to obtain OAuth token.
+
+Please enter OAuth token: y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY
+You have one cloud available: 'drassadnikov-cloud' (id = b1gorbtfqlahpr5802c4). It is going to be used by default.
+Please choose folder to use:
+ [1] infra (id = b1gpf2ca5rpkbvk7phms)
+ [2] Create a new folder
+Please enter your numeric choice: 1
+Your current folder has been set to 'infra' (id = b1gpf2ca5rpkbvk7phms).
+Do you want to configure a default Compute zone? [Y/n] y
+Which zone do you want to use as a profile default?
+ [1] ru-central1-a
+ [2] ru-central1-b
+ [3] ru-central1-c
+ [4] Don't set default zone
+Please enter your numeric choice: 1
+Your profile default Compute zone has been set to 'ru-central1-a'.
+There is a new yc version '0.102.0' available. Current version: '0.101.0'.
+See release notes at https://cloud.yandex.ru/docs/cli/release-notes
+You can install it by running the following command in your shell:
+	$ yc components update
+-----------------------------
+
+
+yc compute instance create --name docker-host --zone ru-central1-a --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 --ssh-key ~/.ssh/yc.pub
+
+one_to_one_nat:
+ address: 51.250.70.85 #пример вывода
+ ip_version: IPV4
+
+[redos@redos ~]$ ssh yc-user@51.250.70.85
+
+
+yc-user@fhm3eh2q3kdvid2nvp3t:~$ docker-machine create --driver generic --generic-ip-address=51.250.70.85 --generic-ssh-user yc-user --generic-ssh-key ~/.ssh/yc docker-host
+
+eval $(docker-machine env docker-host)
