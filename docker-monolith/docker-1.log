@@ -355,12 +355,12 @@ You can install it by running the following command in your shell:
 yc compute instance create --name docker-host --zone ru-central1-a --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 --ssh-key ~/.ssh/yc.pub
 
 one_to_one_nat:
- address: 51.250.70.85 #пример вывода
+ address: 51.250.84.184 #пример вывода
  ip_version: IPV4
 
-[redos@redos ~]$ ssh yc-user@51.250.70.85
+[redos@redos ~]$ ssh yc-user@51.250.84.184
 
-yc-user@fhm3eh2q3kdvid2nvp3t:~$ docker-machine create --driver generic --generic-ip-address=51.250.70.85 --generic-ssh-user yc-user --generic-ssh-key ~/.ssh/yc docker-host
+yc-user@fhm3eh2q3kdvid2nvp3t:~$ 
 
 eval $(docker-machine env docker-host)
 ------
@@ -368,44 +368,89 @@ sudo chmod -R a+xwr /usr/share/rvm
 rvm install 2.7
 
 ----------------------
-
+sudo chmod 666 /var/run/docker.sock
 yc-user@docker-host:~/.docker/docker-monolith$ docker build -t reddit:latest .
-[+] Building 1885.0s (16/16) FINISHED
- => [internal] load build definition from Dockerfile                                                                                                                                                                     0.0s
- => => transferring dockerfile: 438B                                                                                                                                                                                     0.0s
- => [internal] load .dockerignore                                                                                                                                                                                        0.1s
- => => transferring context: 2B                                                                                                                                                                                          0.0s
- => [internal] load metadata for docker.io/library/ubuntu:18.04                                                                                                                                                          1.0s
- => [auth] library/ubuntu:pull token for registry-1.docker.io                                                                                                                                                            0.0s
- => [ 1/10] FROM docker.io/library/ubuntu:18.04@sha256:a3765b4d74747b5e9bdd03205b3fbc4fa19a02781c185f97f24c8f4f84ed7bbf                                                                                                  0.0s
- => [internal] load build context                                                                                                                                                                                        0.0s
- => => transferring context: 89B                                                                                                                                                                                         0.0s
- => CACHED [ 2/10] RUN apt-get update                                                                                                                                                                                    0.0s
- => CACHED [ 3/10] RUN apt-get install -y mongodb-server ruby-full ruby-dev build-essential git                                                                                                                          0.0s
- => [ 4/10] RUN gem install bundler -v 2.2.0                                                                                                                                                                             6.4s
- => [ 5/10] RUN git clone -b monolith https://github.com/express42/reddit.git                                                                                                                                            4.1s
- => [ 6/10] COPY mongod.conf /etc/mongod.conf                                                                                                                                                                            0.3s
- => [ 7/10] COPY db_config /reddit/db_config                                                                                                                                                                             0.2s
- => [ 8/10] COPY start.sh /start.sh                                                                                                                                                                                      0.2s
- => [ 9/10] RUN cd /reddit && rm Gemfile.lock && bundle install                                                                                                                                                       1758.7s
- => [10/10] RUN chmod 0777 /start.sh                                                                                                                                                                                     0.8s
- => exporting to image                                                                                                                                                                                                 113.4s
- => => exporting layers                                                                                                                                                                                                113.3s
- => => writing image sha256:211fd22e68aa5138215cb5fe16d3657bc9cd9348f9a977d02cd56cee9564a204                                                                                                                             0.0s
- => => naming to docker.io/library/reddit:latest                                                          
- 
- yc-user@docker-host:~/.docker/docker-monolith$ docker images -a
-REPOSITORY      TAG       IMAGE ID       CREATED         SIZE
-reddit          latest    211fd22e68aa   2 minutes ago   655MB
-hello-world     latest    feb5d9fea6a5   17 months ago   13.3kB
-tehbilly/htop   latest    4acd2b4de755   4 years ago     6.91MB
+[+] Building 168.8s (15/15) FINISHED                                                                                                                                                          
+ => [internal] load build definition from Dockerfile                                                                                                                                     0.2s
+ => => transferring dockerfile: 439B                                                                                                                                                     0.0s
+ => [internal] load .dockerignore                                                                                                                                                        0.2s
+ => => transferring context: 2B                                                                                                                                                          0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                                                                                          1.7s
+ => [internal] load build context                                                                                                                                                        0.1s
+ => => transferring context: 563B                                                                                                                                                        0.0s
+ => [ 1/10] FROM docker.io/library/ubuntu:18.04@sha256:a3765b4d74747b5e9bdd03205b3fbc4fa19a02781c185f97f24c8f4f84ed7bbf                                                                  2.0s
+ => => resolve docker.io/library/ubuntu:18.04@sha256:a3765b4d74747b5e9bdd03205b3fbc4fa19a02781c185f97f24c8f4f84ed7bbf                                                                    0.1s
+ => => sha256:fdd3c9372c19afa928f99afde58f0f80a008ebb695a8c5ee37de5adb7feb46de 424B / 424B                                                                                               0.0s
+ => => sha256:5d2df19066aca89df8e5317544a1cb599dc657830184762ff6fdefaaf708db65 2.30kB / 2.30kB                                                                                           0.0s
+ => => sha256:72d9f18d70f395ff9bfae4d193077ccea3ca583e3da3dd66f5c84520c0100727 25.69MB / 25.69MB                                                                                         0.6s
+ => => sha256:a3765b4d74747b5e9bdd03205b3fbc4fa19a02781c185f97f24c8f4f84ed7bbf 1.33kB / 1.33kB                                                                                           0.0s
+ => => extracting sha256:72d9f18d70f395ff9bfae4d193077ccea3ca583e3da3dd66f5c84520c0100727                                                                                                1.1s
+ => [ 2/10] RUN apt-get update                                                                                                                                                           5.1s
+ => [ 3/10] RUN apt-get install -y mongodb-server ruby-full ruby-dev build-essential git                                                                                                83.1s 
+ => [ 4/10] RUN gem install bundler -v 2.3.25                                                                                                                                            2.5s 
+ => [ 5/10] RUN git clone -b monolith https://github.com/express42/reddit.git                                                                                                            1.4s 
+ => [ 6/10] COPY mongod.conf /etc/mongod.conf                                                                                                                                            0.3s 
+ => [ 7/10] COPY db_config /reddit/db_config                                                                                                                                             0.2s 
+ => [ 8/10] COPY start.sh /start.sh                                                                                                                                                      0.2s 
+ => [ 9/10] RUN cd /reddit && rm Gemfile.lock && bundle install                                                                                                                         19.2s 
+ => [10/10] RUN chmod 0777 /start.sh                                                                                                                                                     0.7s 
+ => exporting to image                                                                                                                                                                  52.2s 
+ => => exporting layers                                                                                                                                                                 52.2s 
+ => => writing image sha256:0fd770b5fef9235e6fed5f62f19a983b4e4248bbadb37c673475b506d2dc7a2b                                                                                             0.0s 
+ => => naming to docker.io/library/reddit:latest                                                                                                                                         0.0s 
+yc-user@docker-host:~/.docker/docker-monolith$ docker images -a                                                                                                                              
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+reddit        latest    0fd770b5fef9   9 minutes ago   664MB
+hello-world   latest    feb5d9fea6a5   17 months ago   13.3kB
+yc-user@docker-host:~/.docker/docker-monolith$  docker run --name reddit -d --network=host reddit:latest
+bde2d6cd933dd7f9bcbbb4c6ff7d3553a6cb7092f27658d5e65ef2813f171636
+yc-user@docker-host:~/.docker/docker-monolith$ docker-machine ls
+NAME          ACTIVE   DRIVER    STATE     URL                        SWARM   DOCKER    ERRORS
+docker-host   -        generic   Running   tcp://51.250.84.184:2376           v23.0.1   
+                                                    
+http://51.250.84.184:9292
+
+yc-user@docker-host:~/.docker/docker-monolith$  docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: drassadnikov
+Password: 
+WARNING! Your password will be stored unencrypted in /home/yc-user/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+yc-user@docker-host:~/.docker/docker-monolith$ docker tag reddit:latest drassadnikov/otus-reddit:1.0
+yc-user@docker-host:~/.docker/docker-monolith$ docker push drassadnikov/otus-reddit:1.0
+The push refers to repository [docker.io/drassadnikov/otus-reddit]
+4995958f6978: Pushed 
+c9f953281df4: Pushed 
+5b2d6c63495b: Pushed 
+9d612f5d7055: Pushed 
+b97b07fce7de: Pushed 
+6b9548f209fc: Pushed 
+722463d1d1fc: Pushed 
+47cf559e1434: Pushed 
+0eb605292969: Pushed 
+475a54c2a93d: Layer already exists 
+1.0: digest: sha256:35fd0b1bdcc636412977fc8c57e93c8b5b97b1301a6fe33de850ebb4c3db7251 size: 2413
+yc-user@docker-host:~/.docker/docker-monolith$ 
 
 
-yc-user@docker-host:~/.docker/docker-monolith$  docker-machine ls
-NAME          ACTIVE   DRIVER    STATE     URL                       
-docker-host   -        generic   Running   tcp://51.250.70.85:2376   
 
-http://51.250.70.85:9292
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----------------
 yc-user@docker-host:~/.docker/docker-monolith$ docker login

@@ -1,8 +1,9 @@
 # drassadnikov_microservices
 drassadnikov microservices repository
 #Установка docker на yandex cloud:
-sudo apt-get install ca-certificates curl gnupg lsb-release
+https://docs.docker.com/desktop/install/ubuntu/
 
+sudo apt-get install ca-certificates curl gnupg lsb-release
 sudo mkdir -m 0755 -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -12,6 +13,14 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 sudo service docker start
 sudo docker run hello-world
+
+#Установить с помощью удобного скрипта 
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+Executing docker install script, commit: 7cae5f8b0decc17d6571f9f52eb840fbc13b2737
+<...>
+
 
 yc-user@fhm3eh2q3kdvid2nvp3t:~$ sudo docker version
 Client: Docker Engine - Community
