@@ -331,7 +331,7 @@ docker inspect be6d19673ead
 Welcome! This command will take you through the configuration process.
 Please go to https://oauth.yandex.ru/authorize?response_type=token&client_id=1a6990aa636648e9b2ef855fa7bec2fb in order to obtain OAuth token.
 
-Please enter OAuth token: y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY
+: y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY
 You have one cloud available: 'drassadnikov-cloud' (id = b1gorbtfqlahpr5802c4). It is going to be used by default.
 Please choose folder to use:
  [1] infra (id = b1gpf2ca5rpkbvk7phms)
