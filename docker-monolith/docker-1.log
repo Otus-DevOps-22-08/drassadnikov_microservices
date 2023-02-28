@@ -363,3 +363,98 @@ one_to_one_nat:
 yc-user@fhm3eh2q3kdvid2nvp3t:~$ docker-machine create --driver generic --generic-ip-address=51.250.70.85 --generic-ssh-user yc-user --generic-ssh-key ~/.ssh/yc docker-host
 
 eval $(docker-machine env docker-host)
+------
+sudo chmod -R a+xwr /usr/share/rvm
+rvm install 2.7
+
+----------------------
+
+yc-user@docker-host:~/.docker/docker-monolith$ docker build -t reddit:latest .
+[+] Building 1885.0s (16/16) FINISHED
+ => [internal] load build definition from Dockerfile                                                                                                                                                                     0.0s
+ => => transferring dockerfile: 438B                                                                                                                                                                                     0.0s
+ => [internal] load .dockerignore                                                                                                                                                                                        0.1s
+ => => transferring context: 2B                                                                                                                                                                                          0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                                                                                                                          1.0s
+ => [auth] library/ubuntu:pull token for registry-1.docker.io                                                                                                                                                            0.0s
+ => [ 1/10] FROM docker.io/library/ubuntu:18.04@sha256:a3765b4d74747b5e9bdd03205b3fbc4fa19a02781c185f97f24c8f4f84ed7bbf                                                                                                  0.0s
+ => [internal] load build context                                                                                                                                                                                        0.0s
+ => => transferring context: 89B                                                                                                                                                                                         0.0s
+ => CACHED [ 2/10] RUN apt-get update                                                                                                                                                                                    0.0s
+ => CACHED [ 3/10] RUN apt-get install -y mongodb-server ruby-full ruby-dev build-essential git                                                                                                                          0.0s
+ => [ 4/10] RUN gem install bundler -v 2.2.0                                                                                                                                                                             6.4s
+ => [ 5/10] RUN git clone -b monolith https://github.com/express42/reddit.git                                                                                                                                            4.1s
+ => [ 6/10] COPY mongod.conf /etc/mongod.conf                                                                                                                                                                            0.3s
+ => [ 7/10] COPY db_config /reddit/db_config                                                                                                                                                                             0.2s
+ => [ 8/10] COPY start.sh /start.sh                                                                                                                                                                                      0.2s
+ => [ 9/10] RUN cd /reddit && rm Gemfile.lock && bundle install                                                                                                                                                       1758.7s
+ => [10/10] RUN chmod 0777 /start.sh                                                                                                                                                                                     0.8s
+ => exporting to image                                                                                                                                                                                                 113.4s
+ => => exporting layers                                                                                                                                                                                                113.3s
+ => => writing image sha256:211fd22e68aa5138215cb5fe16d3657bc9cd9348f9a977d02cd56cee9564a204                                                                                                                             0.0s
+ => => naming to docker.io/library/reddit:latest                                                          
+ 
+ yc-user@docker-host:~/.docker/docker-monolith$ docker images -a
+REPOSITORY      TAG       IMAGE ID       CREATED         SIZE
+reddit          latest    211fd22e68aa   2 minutes ago   655MB
+hello-world     latest    feb5d9fea6a5   17 months ago   13.3kB
+tehbilly/htop   latest    4acd2b4de755   4 years ago     6.91MB
+
+
+yc-user@docker-host:~/.docker/docker-monolith$  docker-machine ls
+NAME          ACTIVE   DRIVER    STATE     URL                       
+docker-host   -        generic   Running   tcp://51.250.70.85:2376   
+
+http://51.250.70.85:9292
+
+----------------
+yc-user@docker-host:~/.docker/docker-monolith$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: drassadnikov
+Password:
+WARNING! Your password will be stored unencrypted in /home/yc-user/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+yc-user@docker-host:~/.docker/docker-monolith$ docker tag reddit:latest drassadnikov/otus-reddit:1.0
+yc-user@docker-host:~/.docker/docker-monolith$ docker push drassadnikov/otus-reddit:1.0
+The push refers to repository [docker.io/drassadnikov/otus-reddit]
+405495d2cae3: Pushed
+fe1cd69cf571: Pushed
+a4d27a0978be: Pushed
+ba93613f141b: Pushed
+a60953a03908: Pushed
+8a8ad30bbc08: Pushed
+e4b0b8a15e70: Pushed
+12520459f272: Pushed
+6049de7f10f6: Pushed
+475a54c2a93d: Mounted from library/ubuntu
+1.0: digest: sha256:c1cddd131bc9076a7c445aec2df0f1771a0b2a97d9c2adcbb811c3e80de5347d size: 2414t:1.0
+
+[root@redos ~]# docker run --name reddit -d -p 9292:9292 drassadnikov/otus-reddit:1.0
+Unable to find image 'drassadnikov/otus-reddit:1.0' locally
+1.0: Pulling from drassadnikov/otus-reddit
+72d9f18d70f3: Pull complete 
+15db214253de: Pull complete 
+64c274add42b: Pull complete 
+e22abc689d77: Pull complete 
+6888f9c81042: Pull complete 
+7bc8b18de448: Pull complete 
+48f5713f65fd: Pull complete 
+6c1f7b3c0f44: Pull complete 
+ef5bfaca190f: Pull complete 
+2ce17cac99ba: Pull complete 
+Digest: sha256:c1cddd131bc9076a7c445aec2df0f1771a0b2a97d9c2adcbb811c3e80de5347d
+Status: Downloaded newer image for drassadnikov/otus-reddit:1.0
+61b7b819ff432695edb097228a5d6f22e4326574460786c143849c2cc1d21394
+
+
+docker logs reddit -f
+docker exec -it reddit bash
+ps aux
+killall5 1
+
+---------------
+
+$ docker-machine rm docker-host
+$ yc compute instance delete docker-host
