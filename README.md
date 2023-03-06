@@ -317,5 +317,230 @@ d6c633cd5c20   drassadnikov/post:1.0      "python3 post_app.py"    4 minutes ago
 b2084d0743e9   mongo:latest               "docker-entrypoint.s…"   4 minutes ago   Up 10 seconds       27017/tcp                                   funny_vaughan
 yc-user@docker-host:~$ 
 
+# ДЗ по docker-4
+
+yc-user@docker-host:~$ docker-machine ls
+NAME          ACTIVE   DRIVER    STATE     URL                        SWARM   DOCKER    ERRORS
+docker-host   -        generic   Running   tcp://51.250.68.228:2376           v23.0.1   
+yc-user@docker-host:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+yc-user@docker-host:~$ docker run -ti --rm --network none joffotron/docker-net-tools -c ifconfig
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+
+yc-user@docker-host:~$ docker run -ti --rm --network host joffotron/docker-net-tools -c ifconfig
+br-0de816ba9d9e Link encap:Ethernet  HWaddr 02:42:15:B0:15:99  
+          inet addr:172.20.0.1  Bcast:172.20.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::42:15ff:feb0:1599%32565/64 Scope:Link
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:22 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:26 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2505 (2.4 KiB)  TX bytes:2748 (2.6 KiB)
+
+docker0   Link encap:Ethernet  HWaddr 02:42:00:0B:0D:FF  
+          inet addr:172.17.0.1  Bcast:172.17.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::42:ff:fe0b:dff%32565/64 Scope:Link
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:39033 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:57474 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2493060 (2.3 MiB)  TX bytes:611559648 (583.2 MiB)
+
+eth0      Link encap:Ethernet  HWaddr D0:0D:1B:6F:C7:00  
+          inet addr:10.128.0.25  Bcast:10.128.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::d20d:1bff:fe6f:c700%32565/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:533370 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:687263 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:2526840911 (2.3 GiB)  TX bytes:461032800 (439.6 MiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1%32565/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:21304 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:21304 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:1667972 (1.5 MiB)  TX bytes:1667972 (1.5 MiB)
+
+
+yc-user@docker-host:~$ sudo ln -s /var/run/docker/netns /var/run/netns
+yc-user@docker-host:~$ sudo ip netns
+Error: Peer netns reference is invalid.
+Error: Peer netns reference is invalid.
+netns
+default
+yc-user@docker-host:~$ docker network create reddit --driver bridge
+Error response from daemon: network with name reddit already exists
+yc-user@docker-host:~$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+e64f4827c2db   bridge    bridge    local
+b8c4ddd8e438   host      host      local
+cb574e276348   none      null      local
+0de816ba9d9e   reddit    bridge    local
+
+
+docker run -d --network=reddit mongo:latest
+docker run -d --network=reddit drassadnikov/post:1.0
+docker run -d --network=reddit drassadnikov/comment:1.0
+docker run -d --network=reddit -p 9292:9292 drassadnikov/ui:1.0
+
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest
+docker run -d --network=reddit --network-alias=post drassadnikov/post:1.0
+docker run -d --network=reddit --network-alias=comment drassadnikov/comment:1.0
+docker run -d --network=reddit -p 9292:9292 drassadnikov/ui:1.0
+
+docker network create back_net --subnet=10.0.2.0/24
+docker network create front_net --subnet=10.0.1.0/24
+
+docker run -d --network=front_net -p 9292:9292 --name ui drassadnikov/ui:1.0
+docker run -d --network=back_net --name comment drassadnikov/comment:1.0
+docker run -d --network=back_net --name post drassadnikov/post:1.0
+docker run -d --network=back_net --name mongo_db  --network-alias=post_db --network-alias=comment_db mongo:latest
+
+#docker network connect <network> <container>
+
+docker network connect front_net post
+docker network connect front_net comment
+
+1) Зайдите по ssh на docker-host и установите пакет bridge-utils
+> docker-machine ssh docker-host
+> sudo apt-get update && sudo apt-get install bridge-utils
+2) Выполните:
+> docker network ls
+3) Найдите ID сетей, созданных в рамках проекта.
+23
+Избавляем бизнес от ИТ-зависимости
+Bridge network driver
+4) Выполните:
+ > ifconfig | grep br
+
+ yc-user@docker-host:~$ sudo apt install net-tools
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following NEW packages will be installed:
+  net-tools
+0 upgraded, 1 newly installed, 0 to remove and 29 not upgraded.
+Need to get 194 kB of archives.
+After this operation, 803 kB of additional disk space will be used.
+Get:1 http://mirror.yandex.ru/ubuntu bionic/main amd64 net-tools amd64 1.60+git20161116.90da8a0-1ubuntu1 [194 kB]
+Fetched 194 kB in 0s (7,947 kB/s) 
+Selecting previously unselected package net-tools.
+(Reading database ... 65264 files and directories currently installed.)
+Preparing to unpack .../net-tools_1.60+git20161116.90da8a0-1ubuntu1_amd64.deb ...
+Unpacking net-tools (1.60+git20161116.90da8a0-1ubuntu1) ...
+Setting up net-tools (1.60+git20161116.90da8a0-1ubuntu1) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+yc-user@docker-host:~$ 
+
+yc-user@docker-host:~$ ifconfig | grep br
+br-0de816ba9d9e: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.20.0.1  netmask 255.255.0.0  broadcast 172.20.255.255
+br-a6bd2ce16501: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.1  netmask 255.255.255.0  broadcast 10.0.2.255
+br-d21eb922c0f1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.1.1  netmask 255.255.255.0  broadcast 10.0.1.255
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet 10.128.0.25  netmask 255.255.255.0  broadcast 10.128.0.255
+yc-user@docker-host:~$ 
+
+
+sudo iptables -nL -t nat
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+MASQUERADE  all  --  10.0.1.0/24          0.0.0.0/0           
+MASQUERADE  all  --  10.0.2.0/24          0.0.0.0/0           
+MASQUERADE  all  --  172.20.0.0/16        0.0.0.0/0           
+MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0           
+MASQUERADE  tcp  --  10.0.1.2             10.0.1.2             tcp dpt:9292
+
+Chain DOCKER (2 references)
+target     prot opt source               destination         
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+--DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:9292 to:10.0.1.2:9292
+
+yc-user@docker-host:~$ ps ax | grep docker-proxy
+ 4672 ?        Sl     0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9292 -container-ip 10.0.1.2 -container-port 9292
+ 4679 ?        Sl     0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 9292 -container-ip 10.0.1.2 -container-port 9292
+ 8858 pts/0    S+     0:00 grep --color=auto docker-proxy
+
+# docker-compose
+
+sudo apt install docker-compose
+
+docker kill $(docker ps -q) 
+
+
+export USERNAME=drassadnikov
+docker-compose up -d
+docker-compose ps
+
+
+yc-user@docker-host:~$ export USERNAME=drassadnikov
+yc-user@docker-host:~$ docker-compose up -d
+Pulling post_db (mongo:3.2)...
+3.2: Pulling from library/mongo
+a92a4af0fb9c: Pull complete
+74a2c7f3849e: Pull complete
+927b52ab29bb: Pull complete
+e941def14025: Pull complete
+be6fce289e32: Pull complete
+f6d82baac946: Pull complete
+7c1a640b9ded: Pull complete
+e8b2fc34c941: Pull complete
+1fd822faa46a: Pull complete
+61ba5f01559c: Pull complete
+db344da27f9a: Pull complete
+Digest: sha256:0463a91d8eff189747348c154507afc7aba045baa40e8d58d8a4c798e71001f3
+Status: Downloaded newer image for mongo:3.2
+Creating ycuser_post_1 ... 
+Creating ycuser_post_db_1 ... 
+Creating ycuser_ui_1 ... 
+Creating ycuser_comment_1 ... 
+Creating ycuser_post_1
+Creating ycuser_post_db_1
+Creating ycuser_ui_1
+Creating ycuser_post_db_1 ... done
+yc-user@docker-host:~$ docker-compose ps
+      Name                   Command             State                    Ports                  
+-------------------------------------------------------------------------------------------------
+ycuser_comment_1   puma                          Up                                              
+ycuser_post_1      python3 post_app.py           Up                                              
+ycuser_post_db_1   docker-entrypoint.sh mongod   Up      27017/tcp                               
+ycuser_ui_1        puma                          Up      0.0.0.0:9292->9292/tcp,:::9292->9292/tcp
+yc-user@docker-host:~$ 
+
+
+yc-user@docker-host:~$ docker-machine ls
+NAME          ACTIVE   DRIVER    STATE     URL                        SWARM   DOCKER    ERRORS
+docker-host   -        generic   Running   tcp://51.250.68.228:2376           v23.0.1   
+yc-user@docker-host:~$ eval $(docker-machine env docker-host)
+
+
+export USERNAME=drassadnikov
+docker-compose up -d
+docker-compose ps
+
+### Базовое имя проекта
+
+- Как образуется базовое имя проекта?: 
+<docker_compose_folder>_<service_name>_<incrementing_number_of_containers_with_same_name>
+- Как можно его задать? 
+Выставить признак container_name для любого контейнера
+
+
 
 

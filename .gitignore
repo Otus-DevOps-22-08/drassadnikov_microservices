@@ -1,14 +1,24 @@
-packer/variables.json
-packer/files/immutable_variables.json
-packer/yc_yandex.pem
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Zeppelin ignored files
+/ZeppelinRemoteNotebooks/
+/.idea
+/packer/variables.json
 *.tfstate
 *.tfstate.*.backup
 *.tfstate.backup
 *.tfvars
 .terraform/
-terraform/.terraform/
+/terraform/.terraform.lock.hcl
 *.retry
 jdauphant.nginx
+vault.key
 # Vagrant & molecule
 .vagrant/
 *.log
@@ -16,3 +26,6 @@ jdauphant.nginx
 .molecule
 .cache
 .pytest_cache
+/ansible/Pipfile
+/ansible/Pipfile.lock
+*.env
