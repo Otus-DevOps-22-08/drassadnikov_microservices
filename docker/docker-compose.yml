@@ -58,4 +58,3 @@ volumes:
 networks:
   front_net:
   back_net:
- 
