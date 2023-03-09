@@ -22,10 +22,8 @@ Executing docker install script, commit: 7cae5f8b0decc17d6571f9f52eb840fbc13b273
 <...>
 
 # Установка docker-machine 
-curl -sL https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-Linux-x86_64 \
-    > /tmp/docker-machine
-sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&
-  chmod +x /usr/local/bin/docker-machine
+curl -sL https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-Linux-x86_64 > /tmp/docker-machine
+sudo mv /tmp/docker-machine /usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
 --------------------------------
 
@@ -540,6 +538,93 @@ docker-compose ps
 <docker_compose_folder>_<service_name>_<incrementing_number_of_containers_with_same_name>
 - Как можно его задать? 
 Выставить признак container_name для любого контейнера
+
+
+# ДЗ к monitoring-1
+
+
+ yc compute instance create --name docker-host --zone ru-central1-a --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 --ssh-key ~/.ssh/yc.pub
+
+docker-machine create --driver generic --generic-ip-address=84.201.158.141 --generic-ssh-user yc-user --generic-ssh-key ~/.ssh/yc docker-host
+eval $(docker-machine env docker-host)
+
+docker run --rm -p 9090:9090 -d --name prometheus prom/prometheus
+
+yc-user@docker-host:~$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+5f31a4ee1554   prom/prometheus   "/bin/prometheus --c…"   16 seconds ago   Up 13 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   prometheus
+
+yc-user@docker-host:~$ docker-machine ip docker-host
+84.201.158.141
+
+84.201.158.141:9090
+
+export USER_NAME=drassadnikov
+docker build -t $USER_NAME/prometheus .
+
+fatal: not a git repository (or any of the parent directories): .git
+
+git init
+
+# ДЗ к logging-1
+
+export USER_NAME=drassadnikov
+cd ./src/ui && bash docker_build.sh && docker push $USER_NAME/ui:logging
+--yc-user@docker-host:~/src/ui$ docker push drassadnikov/ui:logging
+
+cd ../post-py && bash docker_build.sh && docker push $USER_NAME/post:logging
+cd ../comment && bash docker_build.sh && docker push $USER_NAME/comment:logging
+
+
+yc compute instance create --name logging --zone ru-central1-a --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 --memory 4 --ssh-key ~/.ssh/yc.pub
+
+Установите golang:
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt update
+sudo apt install golang-go
+go env -w GO111MODULE=off
+
+Установите драйвер для Yandex.Cloud:
+go get -u github.com/yandex-cloud/docker-machine-driver-yandex
+
+docker-machine create --driver yandex --yandex-token=y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY  default
+
+
+echo $PATH
+export PATH="$HOME/go/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
+
+
+export FOLDER_ID=b1gpf2ca5rpkbvk7phms
+export $SA_KEY_PATH= ~/.ssh/key.json
+
+ docker-machine create --driver yandex --yandex-image-family "ubuntu-1804-lts" --yandex-platform-id "standard-v1" --yandex-folder-id $FOLDER_ID --yandex-sa-key-file $SA_KEY_PATH --yandex-memory "4" logging
+
+docker-machine create --driver docker-machine-driver-yandex --yandex-image-family "ubuntu-1804-lts" --yandex-platform-id "standard-v1" --yandex-folder-id $FOLDER_ID --yandex-memory "4" logging
+
+yc-user@fhm98vl8pl26mb650te8:~$ docker-machine create --driver yandex --yandex-image-family "ubuntu-1804-lts" --yandex-platform-id "standard-v1" --yandex-folder-id $FOLDER_ID --yandex-memory "4" --yandex-token y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY --yandex-nat logging
+
+sudo chmod 666 /var/run/docker.sock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
