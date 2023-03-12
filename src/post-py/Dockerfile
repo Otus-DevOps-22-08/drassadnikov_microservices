@@ -8,7 +8,8 @@ COPY . /app
 #    pip3 install -r /app/requirements.txt && \
 #    apk del build-base
 
-RUN apk --no-cache --update add build-base=0.4-r1 && \
+RUN apk --no-cache --update add gcc musl-dev \
+    build-base && \
     pip3 install --upgrade pip && \
     pip3 install -r /app/requirements.txt && \
     apk del build-base
