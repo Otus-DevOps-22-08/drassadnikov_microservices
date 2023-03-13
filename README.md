@@ -606,7 +606,14 @@ yc-user@fhm98vl8pl26mb650te8:~$ docker-machine create --driver yandex --yandex-i
 
 sudo chmod 666 /var/run/docker.sock
 
+# ДЗ к kubernetes-1
 
+kubeadm init --apiserver-cert-extra-sans=85.234.3.77 --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=85.234.3.77 --pod-network-cidr=10.244.0.0/16
+
+
+kubeadm join 172.18.28.96:6443 --token sn3b09.dqs8crqdjin6lg7w \
+	--discovery-token-ca-cert-hash sha256:27ec14c56795c8895f39bc599934ee11f136c59007928a94cd08977fb0102712 
+[root@redos redos]# 
 
 
 
