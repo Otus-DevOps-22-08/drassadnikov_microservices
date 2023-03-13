@@ -615,16 +615,97 @@ kubeadm join 172.18.28.96:6443 --token sn3b09.dqs8crqdjin6lg7w \
 	--discovery-token-ca-cert-hash sha256:27ec14c56795c8895f39bc599934ee11f136c59007928a94cd08977fb0102712 
 [root@redos redos]# 
 
+#ДЗ к gitlab-ci
+
+sudo apt-get install ca-certificates curl gnupg lsb-release
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+web:
+  image: 'gitlab/gitlab-ce:latest'
+  restart: always
+  hostname: 'gitlab.example.com'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://51.250.77.119'
+  ports:
+    - '80:80'
+    - '443:443'
+    - '2222:22'
+  volumes:
+    - '/srv/gitlab/config:/etc/gitlab'
+    - '/srv/gitlab/logs:/var/log/gitlab'
+    - '/srv/gitlab/data:/var/opt/gitlab'
+
+    ----------------------
+
+yc compute instance create --name gitlab-ci-vm --zone ru-central1-a --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=50 --memory 4 --ssh-key ~/.ssh/yc.pub
+
+c-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ docker ps
+CONTAINER ID   IMAGE                     COMMAND             CREATED          STATUS                            PORTS                                                                                                             NAMES
+00c35defa105   gitlab/gitlab-ce:latest   "/assets/wrapper"   13 seconds ago   Up 8 seconds (health: starting)   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp, 0.0.0.0:2222->22/tcp, :::2222->22/tcp   gitlab_web_1
+yc-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ docker rm 00c35defa105 -f
+00c35defa105
+yc-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ docker images
+REPOSITORY         TAG       IMAGE ID       CREATED      SIZE
+gitlab/gitlab-ce   latest    70e5f81b95ee   2 days ago   2.83GB
+yc-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ docker rmi 70e5f81b95ee
+Untagged: gitlab/gitlab-ce:latest
+Untagged: gitlab/gitlab-ce@sha256:a87a43aadb7c574dbbdc5ec85e51902e6a6325c7d82eb392849b886d91883f4a
+Deleted: sha256:70e5f81b95ee5470121980c4b609a27ac034ce835b02100d1117b84d2f99076b
+Deleted: sha256:a4ce86a50959758046fe1f5b7d1ecef622f7be43fb17d00b83dcb970e40cc5c2
+Deleted: sha256:69e979bd5234856166dea9c16bfc5b2bd6ad7624ea6a8cc56e16e93dc8b0fb5a
+Deleted: sha256:3efc11edb3eb10ad07ae2df8e9c5ab5dd55e57a9f1141579b415fe32d1b952f6
+Deleted: sha256:45b6ea610eff200ab2d04003925d027ce29ae6ca21a6a6c191b67946593e4165
+Deleted: sha256:1ec1b0e34454cbf430f022aaea2e1aca584dce67e64437da6ccbe119050e604b
+Deleted: sha256:e3b18ff7468a81e22536228c7c1fa7ae5730dde862cb5780b8a708c25b335ae8
+Deleted: sha256:93422ab53f18163ad1b5da777a3c84b40b157e9b780b5cfa9c183de9e85e5c31
+Deleted: sha256:6021993d84a2d9db89ec74cf44366ae3f2d9f9810f3c77b2bd0cd5ddf14825b1
+yc-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ sudo nano docker-compose.yml
+yc-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ docker-compose up -d
+
+yc-user@fhmvrockpkbsl0m3gjm7:/srv/gitlab$ sudo nano /srv/gitlab/config/initial_root_password
+
+# WARNING: This value is valid only in the following conditions
+#          1. If provided manually (either via `GITLAB_ROOT_PASSWORD` environment variable or via `gitlab_rails['initial_root_password']` setting in `gitlab.rb`, it was provided before data$
+#          2. Password hasn't been changed manually, either via UI or via command line.
+#
+#          If the password shown here doesn't work, you must reset the admin password following https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-root-password.
+
+Password: kTiqTADrA/y2FAmP0djrS9osaIuuFXJjHbjxhZwo3fI=
+
+# NOTE: This file will be automatically deleted in the first reconfigure run after 24 hours.
 
 
+git clone http://158.160.51.118/homework/example.git
+cd example
+[redos@redos example]$ git checkout -b gitlab-ci-1
+[redos@redos example]$ git remote add gitlab http://158.160.51.118/homework/example.git
+[redos@redos example]$ git push gitlab gitlab-ci-1
+
+[redos@redos example]$ git pull origin gitlab-ci-1
+[redos@redos example]$ git add .
+[redos@redos example]$ git commit -m "удален"
+
+---------
+[redos@redos example]$ git add .gitlab-ci.yml
+[redos@redos example]$ git commit -m 'add pipeline definition'
+[redos@redos example]$ git push gitlab gitlab-ci-1
 
 
+ Settings -> CI/CD -> Pipelines ->
+Runners и посмотреть на секцию Set up a specific Runner manually :  GR1348941BE458YiokYceozmgpEaY
 
+yc-user@fhmvrockpkbsl0m3gjm7:~$ docker run -d --name gitlab-runner --restart always -v /srv/gitlabrunner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
 
+yc-user@fhmvrockpkbsl0m3gjm7:~$ docker ps
+CONTAINER ID   IMAGE                         COMMAND                  CREATED          STATUS                 PORTS                                                                                                             NAMES
+5241e63f5a94   gitlab/gitlab-runner:latest   "/usr/bin/dumb-init …"   20 seconds ago   Up 15 seconds                                                                                                                            gitlab-runner
+bbe55bb98b84   gitlab/gitlab-ce:latest       "/assets/wrapper"        4 hours ago      Up 4 hours (healthy)   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp, 0.0.0.0:2222->22/tcp, :::2222->22/tcp   gitlab_web_1
 
+docker exec -it gitlab-runner gitlab-runner register --help
 
-
-
+docker exec -it gitlab-runner gitlab-runner register --url http://158.160.51.118/ --non-interactive --locked=false --name DockerRunner --executor docker  --docker-image alpine:latest --registration-token "GR1348941BE458YiokYceozmgpEaY" --tag-list "linux,xenial,ubuntu,docker" --run-untagged
 
 
 
