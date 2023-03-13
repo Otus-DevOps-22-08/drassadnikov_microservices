@@ -565,3 +565,67 @@ docker build -t $USER_NAME/prometheus .
 fatal: not a git repository (or any of the parent directories): .git
 
 git init
+
+# ДЗ к logging-1
+
+export USER_NAME=drassadnikov
+cd ./src/ui && bash docker_build.sh && docker push $USER_NAME/ui:logging
+--yc-user@docker-host:~/src/ui$ docker push drassadnikov/ui:logging
+
+cd ../post-py && bash docker_build.sh && docker push $USER_NAME/post:logging
+cd ../comment && bash docker_build.sh && docker push $USER_NAME/comment:logging
+
+
+yc compute instance create --name logging --zone ru-central1-a --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 --memory 4 --ssh-key ~/.ssh/yc.pub
+
+Установите golang:
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt update
+sudo apt install golang-go
+go env -w GO111MODULE=off
+
+Установите драйвер для Yandex.Cloud:
+go get -u github.com/yandex-cloud/docker-machine-driver-yandex
+
+docker-machine create --driver yandex --yandex-token=y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY  default
+
+
+echo $PATH
+export PATH="$HOME/go/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
+
+
+export FOLDER_ID=b1gpf2ca5rpkbvk7phms
+export $SA_KEY_PATH= ~/.ssh/key.json
+
+ docker-machine create --driver yandex --yandex-image-family "ubuntu-1804-lts" --yandex-platform-id "standard-v1" --yandex-folder-id $FOLDER_ID --yandex-sa-key-file $SA_KEY_PATH --yandex-memory "4" logging
+
+docker-machine create --driver docker-machine-driver-yandex --yandex-image-family "ubuntu-1804-lts" --yandex-platform-id "standard-v1" --yandex-folder-id $FOLDER_ID --yandex-memory "4" logging
+
+yc-user@fhm98vl8pl26mb650te8:~$ docker-machine create --driver yandex --yandex-image-family "ubuntu-1804-lts" --yandex-platform-id "standard-v1" --yandex-folder-id $FOLDER_ID --yandex-memory "4" --yandex-token y0_AgAAAAALvgvzAATuwQAAAADPy4cGyfqeI7nxQ-ufz30CLGqQszcZTqY --yandex-nat logging
+
+sudo chmod 666 /var/run/docker.sock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

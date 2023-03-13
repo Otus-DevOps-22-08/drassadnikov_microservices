@@ -7,25 +7,43 @@ services:
       - post_db:/data/db
     networks:
       - back_net
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   ui:
     container_name: dockermicroservices_ui
-    image: ${USERNAME}/ui:${VERSION}
+    image: ${USERNAME}/ui:${TAG}
     ports:
       - ${PORT}:${PORT}/tcp
     networks:
       - front_net
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   post:
     container_name: dockermicroservices_post
-    image: ${USERNAME}/post:${VERSION}
+    image: ${USERNAME}/post:${TAG}
     networks:
       - front_net
       - back_net
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   comment:
     container_name: dockermicroservices_comment
-    image: ${USERNAME}/comment:${VERSION}
+    image: ${USERNAME}/comment:${TAG}
     networks:
       - front_net
       - back_net
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   prometheus:
     image: ${USERNAME}/prometheus
     ports:
@@ -39,6 +57,8 @@ services:
     networks:
       - front_net
       - back_net
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
   node-exporter:
     image: prom/node-exporter:v0.15.2
     user: root
@@ -50,6 +70,8 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
 
 volumes:
   post_db:
@@ -58,3 +80,4 @@ volumes:
 networks:
   front_net:
   back_net:
+ 
