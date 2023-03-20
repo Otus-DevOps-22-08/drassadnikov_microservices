@@ -29,3 +29,4 @@ vault.key
 /ansible/Pipfile
 /ansible/Pipfile.lock
 *.env
+/gitlab_ci/
